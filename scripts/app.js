@@ -4,6 +4,27 @@ const apiKey = "07264b419d408f70589c13522670d5ef";
 // SELECTORES
 const formulario = document.querySelector("#formulario");
 
+const weatherIconMap = {
+    "01d": "sun",
+    "01n": "moon",
+    "02d": "sun",
+    "02n": "moon",
+    "03d": "cloud",
+    "03n": "cloud",
+    "04d": "cloud",
+    "04n": "cloud",
+    "09d": "cloud-rain",
+    "09n": "cloud-rain",
+    "10d": "cloud-rain",
+    "10n": "cloud-rain",
+    "11d": "cloud-lightning",
+    "11n": "cloud-lightning",
+    "13d": "cloud-snow",
+    "13n": "cloud-snow",
+    "50d": "water",
+    "50n": "water",
+};
+
 IniciarApp();
 
 function IniciarApp() {
@@ -52,6 +73,15 @@ function mostrarClima(datos) {
     const clima = document.querySelector(".weather-description");
     clima.textContent = datos.list[0].weather[0].description;
 
+    const icono = document.querySelector(".weather-icon");
+    icono.className = "weather-icon";
+    setTimeout(() => {
+        icono.classList.add(
+            "bx",
+            `bx-${weatherIconMap[datos.list[0].weather[0].icon]}`
+        );
+    }, 50);
+
     const temperatura = document.querySelector(".temperature");
     temperatura.textContent = `${Math.round(datos.list[0].main.temp)}°C`;
 
@@ -73,6 +103,42 @@ function mostrarClima(datos) {
             <span>${datos.list[0].wind.speed} km/h</span>
         </div>
     `;
+
+    // Mostrar los días siguientes
+    const dias = document.querySelector(".forecast");
+
+    const diaActual = new Date();
+    const diasSiguientes = datos.list.slice(1);
+
+    const diasUnicos = new Set();
+    let contador = 0;
+    dias.innerHTML = "";
+
+    for (const diaDatos of diasSiguientes) {
+        const fecha = new Date(diaDatos.dt_txt);
+        const diaAbreviado = fecha.toLocaleDateString("en", {
+            weekday: "short",
+        });
+        const temperaturaDia = `${Math.round(diaDatos.main.temp)}°C`;
+        const codigoIcono = diaDatos.weather[0].icon;
+
+        if (
+            !diasUnicos.has(diaAbreviado) &&
+            fecha.getDate() !== diaActual.getDate()
+        ) {
+            diasUnicos.add(diaAbreviado);
+            dias.innerHTML += `
+                <div class="forecast-day">
+                    <i class='bx bx-${weatherIconMap[codigoIcono]}'></i>
+                    <div>${diaAbreviado}</div>
+                    <div>${temperaturaDia}</div>
+                </div>
+            `;
+            contador++;
+        }
+
+        if (contador === 4) break;
+    }
 }
 
 function alertaError(error) {

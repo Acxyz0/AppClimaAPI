@@ -4,8 +4,12 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Weather App</title>
+        <title>App de Clima - API</title>
         <link rel="stylesheet" href="styles/style.css" />
+        <link
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+            rel="stylesheet"
+        />
     </head>
     <body>
         <form class="search-container" id="formulario">
@@ -15,32 +19,18 @@
 
         <div class="container">
             <div class="weather-card">
-                <div class="date">Domingo</div>
+                <div class="date"></div>
                 <div class="location"></div>
 
-                <div class="temperature">14</div>
+                <div class="weather-main">
+                    <div class="temperature"></div>
+                    <div class="weather-icon"></div>
+                </div>
                 <div class="weather-description"></div>
 
                 <div class="weather-details"></div>
 
-                <div class="forecast">
-                    <div class="forecast-day">
-                        <div>Lun</div>
-                        <div>14°C</div>
-                    </div>
-                    <div class="forecast-day">
-                        <div>Mar</div>
-                        <div>9°C</div>
-                    </div>
-                    <div class="forecast-day">
-                        <div>Mié</div>
-                        <div>10°C</div>
-                    </div>
-                    <div class="forecast-day">
-                        <div>Jue</div>
-                        <div>11°C</div>
-                    </div>
-                </div>
+                <div class="forecast"></div>
             </div>
         </div>
 
