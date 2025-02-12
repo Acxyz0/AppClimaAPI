@@ -1,27 +1,50 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>App Clima API</title>
+        <title>Weather App</title>
         <link rel="stylesheet" href="styles/style.css" />
     </head>
     <body>
-        <header>
-            <h1>Aplicación del Clima</h1>
-            <div>
-                <form action="">
-                    <input type="text" id="buscador" />
-                    <button type="submit">Buscar</button>
-                </form>
-            </div>
-        </header>
+        <form class="search-container" id="formulario">
+            <input type="text" placeholder="Buscar país..." id="pais" />
+            <button type="submit" id="buscar">Buscar</button>
+        </form>
 
-        <main>
-            <div id="imagen"></div>
-            <div id="datos"></div>
-        </main>
+        <div class="container">
+            <div class="weather-card">
+                <div class="date">Domingo</div>
+                <div class="location"></div>
+
+                <div class="temperature">14</div>
+                <div class="weather-description"></div>
+
+                <div class="weather-details"></div>
+
+                <div class="forecast">
+                    <div class="forecast-day">
+                        <div>Lun</div>
+                        <div>14°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div>Mar</div>
+                        <div>9°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div>Mié</div>
+                        <div>10°C</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div>Jue</div>
+                        <div>11°C</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script src="scripts/app.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 </html>
