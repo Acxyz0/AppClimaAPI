@@ -48,6 +48,7 @@ function searchWeather(city) {
         successAlert("El campo no puede estar vacío");
         return;
     }
+
     callAPI(city);
 }
 
@@ -55,6 +56,7 @@ function searchWeather(city) {
 function callAPI(city) {
     const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
 
+    spinner();
     fetch(url)
         .then((response) => response.json())
         .then((data) => {
@@ -149,5 +151,13 @@ function successAlert(error) {
         text: error,
         icon: "error",
         draggable: true,
+    });
+}
+
+function spinner() {
+    Swal.fire({
+        title: "¡Completado!",
+        text: "Datos obtenidos con éxito",
+        icon: "success",
     });
 }
