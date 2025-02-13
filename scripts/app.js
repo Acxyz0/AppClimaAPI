@@ -2,7 +2,7 @@
 const apiKey = "07264b419d408f70589c13522670d5ef";
 
 // SELECTORES
-const formulario = document.querySelector("#formulario");
+const form = document.querySelector("form");
 
 const weatherIconMap = {
     "01d": "sun",
@@ -25,123 +25,125 @@ const weatherIconMap = {
     "50n": "water",
 };
 
-IniciarApp();
+// Iniciar la aplicación
+runApp();
 
-function IniciarApp() {
+function runApp() {
+    // Llama a la API al cargar la página
     document.addEventListener("DOMContentLoaded", () => {
-        const paisDefault = "Guatemala";
-        consultarAPI(paisDefault);
+        const cityDefault = "Guatemala";
+        callAPI(cityDefault);
     });
 
-    formulario.addEventListener("submit", (e) => {
-        const pais = document.querySelector("#pais").value;
+    // Llama a la API al enviar el form
+    form.addEventListener("submit", (e) => {
+        const city = document.querySelector("input").value;
         e.preventDefault();
-        buscarClima(pais);
+        searchWeather(city);
     });
 }
 
-function buscarClima(pais) {
-    if (pais === "") {
-        alertaError("El campo no puede estar vacío");
+function searchWeather(city) {
+    if (city === "") {
+        successAlert("El campo no puede estar vacío");
         return;
     }
-
-    consultarAPI(pais);
+    callAPI(city);
 }
 
 // FUNCIÓN PARA LLAMAR A LA API
-function consultarAPI(pais) {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${pais}&appid=${apiKey}&units=metric`;
+function callAPI(city) {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
 
     fetch(url)
-        .then((respuesta) => respuesta.json())
-        .then((datos) => {
-            if (datos.cod === "404") {
-                alertaError("Ciudad no Encontrada");
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.cod === "404") {
+                successAlert("Ciudad no Encontrada");
                 return;
             }
 
             // MOSTRAR RESULTADO
-            mostrarClima(datos);
+            showWeather(data);
         });
 }
 
-function mostrarClima(datos) {
-    const ubicacion = document.querySelector(".location");
-    ubicacion.textContent = datos.city.name;
+function showWeather(data) {
+    const location = document.querySelector(".location");
+    location.textContent = data.city.name;
 
-    const clima = document.querySelector(".weather-description");
-    clima.textContent = datos.list[0].weather[0].description;
+    const weather = document.querySelector(".weather-description");
+    weather.textContent = data.list[0].weather[0].description;
 
-    const icono = document.querySelector(".weather-icon");
-    icono.className = "weather-icon";
+    const icon = document.querySelector(".weather-icon");
+    icon.className = "weather-icon";
     setTimeout(() => {
-        icono.classList.add(
+        icon.classList.add(
             "bx",
-            `bx-${weatherIconMap[datos.list[0].weather[0].icon]}`
+            `bx-${weatherIconMap[data.list[0].weather[0].icon]}`
         );
     }, 50);
 
-    const temperatura = document.querySelector(".temperature");
-    temperatura.textContent = `${Math.round(datos.list[0].main.temp)}°C`;
+    const temp = document.querySelector(".temperature");
+    temp.textContent = `${Math.round(data.list[0].main.temp)}°C`;
 
-    const dia = document.querySelector(".date");
-    dia.textContent = new Date().toLocaleDateString("en", { weekday: "long" });
+    const day = document.querySelector(".date");
+    day.textContent = new Date().toLocaleDateString("en", { weekday: "long" });
 
-    const detalles = document.querySelector(".weather-details");
-    detalles.innerHTML = `
+    const details = document.querySelector(".weather-details");
+    details.innerHTML = `
         <div class="detail-item">
             Precipitation
-            <span>${datos.list[0].pop}%</span>
+            <span>${data.list[0].pop}%</span>
         </div>
         <div class="detail-item">
             Humidity
-            <span>${datos.list[0].main.humidity}%</span>
+            <span>${data.list[0].main.humidity}%</span>
         </div>
         <div class="detail-item">
             Wind Speed
-            <span>${datos.list[0].wind.speed} km/h</span>
+            <span>${data.list[0].wind.speed} km/h</span>
         </div>
     `;
 
     // Mostrar los días siguientes
-    const dias = document.querySelector(".forecast");
+    const days = document.querySelector(".forecast");
 
-    const diaActual = new Date();
-    const diasSiguientes = datos.list.slice(1);
+    const currentDay = new Date();
+    const followDays = data.list.slice(1);
 
-    const diasUnicos = new Set();
-    let contador = 0;
-    dias.innerHTML = "";
+    const uniqueDays = new Set();
+    let count = 0;
+    days.innerHTML = "";
 
-    for (const diaDatos of diasSiguientes) {
-        const fecha = new Date(diaDatos.dt_txt);
-        const diaAbreviado = fecha.toLocaleDateString("en", {
+    for (const dayData of followDays) {
+        const date = new Date(dayData.dt_txt);
+        const abbrevDay = date.toLocaleDateString("en", {
             weekday: "short",
         });
-        const temperaturaDia = `${Math.round(diaDatos.main.temp)}°C`;
-        const codigoIcono = diaDatos.weather[0].icon;
+        const tempDay = `${Math.round(dayData.main.temp)}°C`;
+        const codIcon = dayData.weather[0].icon;
 
         if (
-            !diasUnicos.has(diaAbreviado) &&
-            fecha.getDate() !== diaActual.getDate()
+            !uniqueDays.has(abbrevDay) &&
+            date.getDate() !== currentDay.getDate()
         ) {
-            diasUnicos.add(diaAbreviado);
-            dias.innerHTML += `
+            uniqueDays.add(abbrevDay);
+            days.innerHTML += `
                 <div class="forecast-day">
-                    <i class='bx bx-${weatherIconMap[codigoIcono]}'></i>
-                    <div>${diaAbreviado}</div>
-                    <div>${temperaturaDia}</div>
+                    <i class='bx bx-${weatherIconMap[codIcon]}'></i>
+                    <div>${abbrevDay}</div>
+                    <div>${tempDay}</div>
                 </div>
             `;
-            contador++;
+            count++;
         }
 
-        if (contador === 4) break;
+        if (count === 4) break;
     }
 }
 
-function alertaError(error) {
+function successAlert(error) {
     Swal.fire({
         title: "Error!",
         text: error,
